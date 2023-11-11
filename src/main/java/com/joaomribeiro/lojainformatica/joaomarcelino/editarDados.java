@@ -147,73 +147,39 @@ public class editarDados extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um computador na tabela para editar.", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        String hd = inputValueHD.getText();
-        String processador = inputValueCPU.getText();
-
-        if (hd.isEmpty() || processador.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos obrigatórios.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:4306/lojainformatica", "root", "P@$$w0rd");
-
-            String query = "UPDATE computador SET hd=?, processador=? WHERE marca=?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                preparedStatement.setString(1, hd);
-                preparedStatement.setString(2, processador);
-                preparedStatement.setString(3, (String) receiveDataTable.getValueAt(selectedRow, 0)); // Marca está na coluna 0
-
-                int rowsAffected = preparedStatement.executeUpdate();
-                if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(this, "Computador editado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                    limparCampos();
-                    carregarDadosNaTabela();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Erro ao editar computador.", "Erro", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados.", "Erro", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
+        
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-                int selectedRow = receiveDataTable.getSelectedRow();
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Selecione um computador na tabela para excluir.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        int selectedRow = receiveDataTable.getSelectedRow();
+            if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um computador na tabela para excluir.", "Aviso", JOptionPane.WARNING_MESSAGE);
         return;
     }
 
-    int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este computador?", "Confirmação", JOptionPane.YES_NO_OPTION);
-    if (confirmacao == JOptionPane.YES_OPTION) {
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:4306/lojainformatica", "root", "P@$$w0rd");
+        int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este computador?", "Confirmação", JOptionPane.YES_NO_OPTION);
+if (confirmacao == JOptionPane.YES_OPTION) {
+    try {
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:4306/lojainformatica", "root", "P@$$w0rd");
 
-            String marca = (String) receiveDataTable.getValueAt(selectedRow, 0);
-            String query = "DELETE FROM computador WHERE marca=?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                preparedStatement.setString(1, marca);
+        String processador = (String) receiveDataTable.getValueAt(selectedRow, 2); // Processador está na coluna 2
+        String query = "DELETE FROM computador WHERE processador=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, processador);
 
-                int rowsAffected = preparedStatement.executeUpdate();
-                if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(this, "Computador excluído com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                    limparCampos();
-                    carregarDadosNaTabela();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Erro ao excluir computador.", "Erro", JOptionPane.ERROR_MESSAGE);
-                }
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Computador excluído com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                limparCampos();
+                carregarDadosNaTabela();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao excluir computador.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados.", "Erro", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Erro ao conectar ao banco de dados.", "Erro", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    }
     }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
